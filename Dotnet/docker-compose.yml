@@ -1,0 +1,30 @@
+version: '3.9'
+
+services:
+  db:
+        image: mysql:8.0
+        environment:
+          MYSQL_ROOT_PASSWORD: ksndfjkasdKIeh12kJ
+          MYSQL_USER: admin
+          MYSQL_PASSWORD: ksndfjkasdKIeh12kJ
+          MYSQL_DATABASE: testdb
+        ports:
+          - 44581:3306
+        volumes:
+          - ../../testdb/conf.d:/etc/mysql/conf.d
+          - ../../testdb/data:/var/lib/mysql
+          - ../../testdb/initdb.d:/docker-entrypoint-initdb.d
+
+  flyway-migrate:
+      image: flyway/flyway:9.10
+      volumes:
+          - ./Flyway:/flyway/sql
+          - ./Config/flyway:/flyway/conf
+      command: migrate
+
+  flyway-repair:
+      image: flyway/flyway:9.10
+      volumes:
+        - ./Flyway:/flyway/sql
+        - ./Config/flyway:/flyway/conf
+      command: repair
